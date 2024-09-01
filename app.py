@@ -10,8 +10,12 @@ best_xgb_model = pickle.load(pickle_in)
 
 def predict_stage(features):
     """Function to predict the stage of cirrhosis using the XGBoost model."""
-    prediction = best_xgb_model.predict([features])
-    return prediction[0]
+    try:
+        prediction = best_xgb_model.predict([features])
+        return prediction[0]
+    except Exception as e:
+        raise ValueError(f"Error in prediction: {str(e)}")
+
 
 def main():
     # HTML for styling
@@ -64,8 +68,13 @@ def main():
     
     # When the 'Predict' button is clicked
     if st.button("Predict"):
-        result = predict_stage(features)
-        st.success(f"The predicted stage of cirrhosis is: {result}")
+        try:
+            result = predict_stage(features)
+            st.success(f"The predicted stage of cirrhosis is: {result}")
+        except ValueError as ve:
+            st.error(f"ValueError: {str(ve)}")
+        except Exception as e:
+            st.error(f"An unexpected error occurred: {str(e)}")
 
 if __name__ == '__main__':
     main()
