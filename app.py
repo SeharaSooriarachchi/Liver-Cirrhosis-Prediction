@@ -69,3 +69,22 @@ def main():
 
 if __name__ == '__main__':
     main()
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.get_json(force=True)
+    # Extract features from the incoming JSON data
+    features = [
+        data['age'], data['sex'], data['ascites'], data['hepatomegaly'],
+        data['spiders'], data['edema'], data['drug'], data['bilirubin'],
+        data['cholesterol'], data['albumin'], data['copper'], data['alkphos'],
+        data['sgot'], data['triglycerides'], data['platelets'], data['prothombin']
+    ]
+    prediction = model.predict([features])
+    return jsonify({'prediction': prediction[0]})
+
+if __name__ == '__main__':
+    app.run(debug=True)
